@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{E04DB903-49C1-589B-5551-D9B841D88D41}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "cs2d",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
