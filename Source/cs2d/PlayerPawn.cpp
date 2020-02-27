@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Camera/CameraComponent.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 APlayerPawn::APlayerPawn()
@@ -21,6 +22,11 @@ APlayerPawn::APlayerPawn()
 	UCameraComponent* Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
 	Body->SetupAttachment(Player);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("Content/StarterContent/Shapes/Shape_NarrowCapsule.uasset"));
+	UStaticMesh* Asset = MeshAsset.Object;
+	Body->SetStaticMesh(Asset);
+
 	Weapon->SetRelativeScale3D(FVector(0.75f, 0.1f, 0.1f));
 	Weapon->SetRelativeLocation(FVector(15.0f,15.0f,50.0f));
 	Weapon->SetupAttachment(Body);
