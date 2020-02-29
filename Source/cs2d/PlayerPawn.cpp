@@ -22,11 +22,13 @@ APlayerPawn::APlayerPawn()
 
 	Body->SetupAttachment(Player);
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Shapes/Shape_NarrowCapsule.Shape_NarrowCapsule"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> BodyAsset(TEXT("/Game/StarterContent/Shapes/Shape_NarrowCapsule.Shape_NarrowCapsule"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> GunAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
 
-	if (MeshAsset.Succeeded())
+	if (BodyAsset.Succeeded() && GunAsset.Succeeded())
 	{
-		Body->SetStaticMesh(MeshAsset.Object);
+		Body->SetStaticMesh(BodyAsset.Object);
+		Weapon->SetStaticMesh(GunAsset.Object);
 	}
 
 	Weapon->SetRelativeScale3D(FVector(0.75f, 0.1f, 0.1f));
