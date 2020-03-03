@@ -29,10 +29,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	FVector2D Direction;
+	float SpeedMultiplier;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	FORCEINLINE void SetSpeedMultiplier(float NewSpeed) { SpeedMultiplier = NewSpeed; };
+	FORCEINLINE float GetSpeedMultiplier() { return SpeedMultiplier; };
+
+	void MoveX(float value);
+	void MoveY(float value);
 };

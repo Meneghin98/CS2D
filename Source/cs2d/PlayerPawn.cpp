@@ -50,10 +50,19 @@ void APlayerPawn::BeginPlay()
 void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 }
 
 // Called to bind functionality to input
 void APlayerPawn::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void APlayerPawn::MoveX(float value) {
+
+}
+
+void APlayerPawn::MoveY(float value) {
+
 }
