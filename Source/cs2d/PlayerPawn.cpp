@@ -5,6 +5,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Camera/CameraComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Components/InputComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 
 // Sets default values
 APlayerPawn::APlayerPawn()
@@ -14,11 +16,14 @@ APlayerPawn::APlayerPawn()
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	MovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("MovementComponent"));
+
 	Player = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collider"));
+	SetRootComponent(Player);
+
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
 	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
-	UCameraComponent *Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
 	Body->SetupAttachment(Player);
 
@@ -57,12 +62,16 @@ void APlayerPawn::Tick(float DeltaTime)
 void APlayerPawn::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	// Set up "movement" bindings.
+	PlayerInputComponent->BindAxis("MoveUP", this, &APlayerPawn::MoveX);
+	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerPawn::MoveY);
 }
 
-void APlayerPawn::MoveX(float value) {
-
+void APlayerPawn::MoveX(float AxisValue) {
+	MovementComponent->AddInputVector(GetActorForwardVector() * AxisValue);
 }
 
-void APlayerPawn::MoveY(float value) {
-
+void APlayerPawn::MoveY(float AxisValue) {
+	MovementComponent->AddInputVector(GetActorRightVector() * AxisValue);
 }

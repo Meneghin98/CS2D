@@ -11,16 +11,6 @@ class CS2D_API APlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
-
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* Body;
-
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* Weapon;
-
-	UPROPERTY(EditAnywhere)
-	USceneComponent* Player;
-
 public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
@@ -29,9 +19,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	FVector2D Direction;
-	float SpeedMultiplier;
+	UPROPERTY(EditAnywhere, Category = "Components")
+	class UStaticMeshComponent* Body;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	class UStaticMeshComponent* Weapon;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	class UCapsuleComponent* Player;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	class UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	class UFloatingPawnMovement* MovementComponent;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -39,9 +40,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	FORCEINLINE void SetSpeedMultiplier(float NewSpeed) { SpeedMultiplier = NewSpeed; };
-	FORCEINLINE float GetSpeedMultiplier() { return SpeedMultiplier; };
-
-	void MoveX(float value);
-	void MoveY(float value);
+	void MoveX(float AxisValue);
+	void MoveY(float AxisValue);
 };
