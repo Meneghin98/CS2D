@@ -18,14 +18,11 @@ APlayerPawn::APlayerPawn()
 
 	MovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("MovementComponent"));
 
-	Player = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collider"));
-	SetRootComponent(Player);
-
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
 	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
-	Body->SetupAttachment(Player);
+	SetRootComponent(Body);
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> BodyAsset(TEXT("/Game/StarterContent/Shapes/Shape_NarrowCapsule.Shape_NarrowCapsule"));
 	ConstructorHelpers::FObjectFinder<UStaticMesh> GunAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
@@ -41,8 +38,7 @@ APlayerPawn::APlayerPawn()
 	Weapon->SetupAttachment(Body);
 	Camera->SetRelativeLocation(FVector(0.0f, 0.0f, 500.0f));
 	Camera->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
-	Camera->SetupAttachment(Player);
-	Player->SetupAttachment(RootComponent);
+	Camera->SetupAttachment(Body);
 }
 
 // Called when the game starts or when spawned

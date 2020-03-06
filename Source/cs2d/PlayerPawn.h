@@ -26,9 +26,6 @@ protected:
 	class UStaticMeshComponent* Weapon;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	class UCapsuleComponent* Player;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
 	class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
