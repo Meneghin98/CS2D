@@ -7,6 +7,9 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 APlayerPawn::APlayerPawn()
@@ -18,11 +21,21 @@ APlayerPawn::APlayerPawn()
 
 	MovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("MovementComponent"));
 
-	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
-	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Collision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleCollision"));
+	SetRootComponent(Collision);
 
-	SetRootComponent(Body);
+	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
+	Body->SetupAttachment(RootComponent);
+
+	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+	Weapon->SetupAttachment(Body);
+
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->bUsePawnControlRotation = false;
+	
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(CameraBoom);
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> BodyAsset(TEXT("/Game/StarterContent/Shapes/Shape_NarrowCapsule.Shape_NarrowCapsule"));
 	ConstructorHelpers::FObjectFinder<UStaticMesh> GunAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
@@ -33,18 +46,19 @@ APlayerPawn::APlayerPawn()
 		Weapon->SetStaticMesh(GunAsset.Object);
 	}
 
+
 	Weapon->SetRelativeScale3D(FVector(0.75f, 0.1f, 0.1f));
 	Weapon->SetRelativeLocation(FVector(15.0f, 15.0f, 50.0f));
-	Weapon->SetupAttachment(Body);
-	Camera->SetRelativeLocation(FVector(0.0f, 0.0f, 500.0f));
-	Camera->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
-	Camera->SetupAttachment(Body);
+	//Camera->SetRelativeLocation(FVector(0.0f, 0.0f, 500.0f));
+	CameraBoom->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
+
 }
 
 // Called when the game starts or when spawned
 void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	PlayerController = Cast<APlayerController>(GetController());
 }
 
 // Called every frame
@@ -52,6 +66,15 @@ void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (PlayerController != nullptr)
+	{
+		FHitResult TraceResult(ForceInit);
+		PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_Camera, false, TraceResult);
+
+		FRotator Target = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TraceResult.Location);
+		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), Target, DeltaTime, 33.f);
+		SetActorRotation(FRotator(0.f, Target.Yaw, 0.f));
+	}
 }
 
 // Called to bind functionality to input

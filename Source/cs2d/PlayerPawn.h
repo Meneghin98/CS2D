@@ -19,6 +19,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category ="Components")
+	class UCapsuleComponent* Collision;
+
 	UPROPERTY(EditAnywhere, Category = "Components")
 	class UStaticMeshComponent* Body;
 
@@ -26,10 +29,16 @@ protected:
 	class UStaticMeshComponent* Weapon;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
+	class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
 	class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	class UFloatingPawnMovement* MovementComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Controller")
+	class APlayerController* PlayerController;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
